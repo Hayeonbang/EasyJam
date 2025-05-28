@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIAST Dataset</title>
+    <link rel="stylesheet" href="/css/PIAST.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">PIAST</div>
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#datasets">Datasets</a></li>
+                <li><a href="#taxonomy">Taxonomy</a></li>
+                <li><a href="#experiments">Experiments</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="overview" class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">PIAST</h1>
+                <p class="hero-subtitle">A Piano Dataset with Audio, Symbolic, and Text Data</p>
+                <div class="hero-links">
+                    <a href="https://github.com/Hayeonbang/PIAST" class="hero-link" target="_blank">Code</a>
+                    <a href="https://link-to-your-paper.pdf" class="hero-link" target="_blank">Paper</a>
+                    <a href="https://link-to-download-data" class="hero-link" target="_blank">Data</a>
+                </div>
+                <hr class="hero-divider">
+                <p class="hero-description">
+                    PIAST (PIano dataset with Audio, Symbolic, and Text) presents a multimodal dataset that pairs <span style="color: var(--accent-color); font-weight: bold;">solo piano music with text</span>. <br>
+                    In addition to the audio and text data, PIAST includes <span style="color: var(--accent-color); font-weight: bold;">MIDI data</span>, transcribed through our transcription pipeline.
+                    The dataset is<br> divided into <span style="color: var(--accent-color); font-weight: bold;">two subsets</span>: PIAST-YT and PIAST-AT, each with distinct text collection methods and research purposes. <br>
+                    The dataset and the training weights are available on
+                    <a href="https://dataset-link" target="_blank" style="color: var(--text-color); font-weight: bold; text-decoration: underline;">this link</a>.
+                </p>
+            </div>
+        </section>
+
+        <section id="datasets" class="dataset-container">
+            <div class="dataset-column">
+                <h2>PIAST-YT</h2>
+                <p>PIAST-YT consists of <span style="font-weight: bold;">9,673 tracks (1006 hours) </span> of solo piano audio and text <span style="font-size: 0.9rem;">(title, description, and tags)</span> collected from <span style="color: var(--accent-color); font-weight: bold;">YouTube</span>.
+                The collected text data was processed with <span style="font-style: italic;">ChatGPT-4 Turbo</span> to extract text represents each music content.
+            </div>
+            <div class="dataset-column">
+                <h2>PIAST-AT</h2>
+                <p>PIAST-AT consists of 2,023 <span style="color: var(--accent-color); font-weight: bold;">expert-annotated</span> tracks, providing more accurate and detailed text information.
+                    Each 30-second segment from PIAST-YT was annotated using our <span style="color: var(--accent-color); font-weight: bold;">piano-specific taxonomy</span>, which includes emotion, mood, genre, and style.
+                    The text data also includes agreement information from three annotators.
+
+            </div>
+        </section>
+        
+        <section id="taxonomy">
+            <h2>Taxonomy & Samples</h2>
+            <p class="taxonomy-description">
+                We constructed a <span style="color: var(--accent-color); font-weight: bold;">piano-specific taxonomy</span> for solo piano music to encompass and define the range of expressions possible in solo piano music. 
+                7 music experts participated in the construction of the taxonomy, by rating each tag by its suitability for solo piano music.
+                The taxonomy includes three main categories: Emotion/Mood, Genre, and Style. The samples below each tag are the sample audio that were labeled with the corresponding tag during the annotation process.
+            <div class="taxonomy-container">
+                <div class="taxonomy-group emotion-mood">
+                    <h3>Emotion/Mood</h3>
+                    
+                    <!-- 첫 번째 줄 그룹 -->
+                    <div class="tag-group">
+                        <div class="tag-item">
+                            <div class="tag-name">Happy</div>
+                            <audio class="audio-player" controls>
+                                <source src="happy.mp3" type="audio/mpeg">
+                            </audio>
+                        </div>
+                        <div class="tag-item">
+                            <div class="tag-name">Bright</div>
+                            <audio class="audio-player" controls>
+                                <source src="bright.mp3" type="audio/mpeg">
+                            </audio>
+                        </div>
+                        <div class="tag-item">
+                            <div class="tag-name">Playful</div>
+                            <audio class="audio-player" controls>
+                                <source src="playful.mp3" type="audio/mpeg">
+                            </audio>
+                        </div>
+                        <div class="tag-item">
+                            <div class="tag-name">Cute</div>
+                            <audio class="audio-player" controls>
+                                <source src="cute.mp3" type="audio/mpeg">
+                            </audio>
+                        </div>
+                    </div>
+                    
+                    <!-- 두 번째 줄 그룹 -->
+                    <div class="tag-group">
+                        <div class="tag-item">
+                            <div class="tag-name">Relaxing/Calm</div>
+                            <audio class="audio-player" controls>
+                                <source src="relaxing.mp3" type="audio/mpeg">
+                            </audio>
+                        </div>
+                        <div class="tag-item">
+                            <div class="tag-name">Emotional</div>
+                            <audio class="audio-player" controls>
+                                <source src="emotional.mp3" type="audio/mpeg">
+                            </audio>
+                        </div>
+                        <div class="tag-item">
+                            <div class="tag-name">Dreamy</div>
+                            <audio class="audio-player" controls>
+                                <source src="dreamy.mp3" type="audio/mpeg">
+                            </audio>
+                        </div>
+                        <div class="tag-item">
+                            <div class="tag-name">Mysterious</div>
+                            <audio class="audio-player" controls>
+                                <source src="mysterious.mp3" type="audio/mpeg">
+                            </audio>
+                        </div>
+                    </div>
+                    
+                    <!-- 세 번째 줄 그룹 -->
+                    <div class="tag-group">
+                        <div class="tag-item">
+                            <div class="tag-name">Sad</div>
+                            <audio class="audio-player" controls>
+                                <source src="sad.mp3" type="audio/mpeg">
+                            </audio>
+                        </div>
+                        <div class="tag-item">
+                            <div class="tag-name">Dark</div>
+                            <audio class="audio-player" controls>
+                                <source src="dark.mp3" type="audio/mpeg">
+                            </audio>
+                        </div>
+                        <div class="tag-item">
+                            <div class="tag-name">Tense</div>
+                            <audio class="audio-player" controls>
+                                <source src="tense.mp3" type="audio/mpeg">
+                            </audio>
+                        </div>
+                        <div class="tag-item">
+                            <div class="tag-name">Scary</div>
+                            <audio class="audio-player" controls>
+                                <source src="scary.mp3" type="audio/mpeg">
+                            </audio>
+                        </div>
+                    </div>
+        
+                    <!-- 네 번째 줄 그룹 -->
+                    <div class="tag-group">
+                        <div class="tag-item">
+                            <div class="tag-name">Epic</div>
+                            <audio class="audio-player" controls>
+                                <source src="epic.mp3" type="audio/mpeg">
+                            </audio>
+                        </div>
+                        <div class="tag-item">
+                            <div class="tag-name">Intense/Grand</div>
+                            <audio class="audio-player" controls>
+                                <source src="intense.mp3" type="audio/mpeg">
+                            </audio>
+                        </div>
+                        <div class="tag-item">
+                            <div class="tag-name">Passionate</div>
+                            <audio class="audio-player" controls>
+                                <source src="passionate.mp3" type="audio/mpeg">
+                            </audio>
+                        </div>
+                        <div class="tag-item">
+                            <div class="tag-name">Powerful</div>
+                            <audio class="audio-player" controls>
+                                <source src="powerful.mp3" type="audio/mpeg">
+                            </audio>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+                <div class="taxonomy-row">
+                    <div class="taxonomy-group genre">
+                        <h3>Genre</h3>
+                        <div class="taxonomy-grid">
+                            <div class = "tag-item">
+                                <div class="tag-name">Jazz</div>
+                                <audio class="audio-player" controls>
+                                    <source src="jazz.mp3" type="audio/mpeg">
+                                </audio>
+                            </div>
+                            <div class = "tag-item">
+                                <div class="tag-name">Blues</div>
+                                <audio class="audio-player" controls>
+                                    <source src="blues.mp3" type="audio/mpeg">
+                                </audio>
+                            </div>
+                            <div class = "tag-item">
+                                <div class="tag-name">Funk</div>
+                                <audio class="audio-player" controls>
+                                    <source src="funk.mp3" type="audio/mpeg">
+                                </audio>
+                            </div>
+                            <div class = "tag-item">
+                                <div class="tag-name">Swing</div>
+                                <audio class="audio-player" controls>
+                                    <source src="swing.mp3" type="audio/mpeg">
+                                </audio>
+                            </div>
+                            <div class = "tag-item">
+                                <div class="tag-name">Latin</div>
+                                <audio class="audio-player" controls>
+                                    <source src="latin.mp3" type="audio/mpeg">
+                                </audio>
+                            </div>
+                            <div class = "tag-item">
+                                <div class="tag-name">Bossan Nova</div>
+                                <audio class="audio-player" controls>
+                                    <source src="bossanova.mp3" type="audio/mpeg">
+                                </audio>
+                            </div>
+                            <div class = "tag-item">
+                                <div class="tag-name">Ragtime</div>
+                                <audio class="audio-player" controls>
+                                    <source src="ragtime.mp3" type="audio/mpeg">
+                                </audio>
+                            </div>
+                            <div class = "tag-item">
+                                <div class="tag-name">Ballad</div>
+                                <audio class="audio-player" controls>
+                                    <source src="ballad.mp3" type="audio/mpeg">
+                                </audio>
+                            </div>
+                            <div class="tag-item">
+                                <div class="tag-name">New-age</div>
+                                <audio class="audio-player" controls>
+                                    <source src="newage.mp3" type="audio/mpeg">
+                                </audio>
+                            </div>
+                            <div class = "tag-item">
+                                <div class="tag-name">Pop-Piano Cover</div>
+                                <audio class="audio-player" controls>
+                                    <source src="poppiano.mp3" type="audio/mpeg">
+                                </audio>
+                            </div>
+                            <div class="tag-item">
+                                <div class="tag-name">Classical</div>
+                                <audio class="audio-player" controls>
+                                    <source src="classical.mp3" type="audio/mpeg">
+                                </audio>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="taxonomy-group style">
+                        <h3>Style</h3>
+                        <div class="taxonomy-grid">
+                            <div class="tag-item">
+                                <div class="tag-name">Easy</div>
+                                <audio class="audio-player" controls>
+                                    <source src="easy.mp3" type="audio/mpeg">
+                                </audio>
+                            </div>
+                            <div class="tag-item">
+                                <div class="tag-name">Difficult/Advanced</div>
+                                <audio class="audio-player" controls>
+                                    <source src="difficult.mp3" type="audio/mpeg">
+                                </audio>
+                            </div>
+                            <div class="tag-item">
+                                <div class="tag-name">Laid-back</div>
+                                <audio class="audio-player" controls>
+                                    <source src="laidback.mp3" type="audio/mpeg">
+                                </audio>
+                            </div>
+                            <div class="tag-item">
+                                <div class="tag-name">Speedy </div>
+                                <audio class="audio-player" controls>
+                                    <source src="speedy.mp3" type="audio/mpeg">
+                                </audio>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="experiments">
+            <h2>Experiments & Results</h2>
+            <p class="experiment-description">
+                We conducted <span style="color: var(--accent-color); font-weight: bold;"> Piano music classification tasks</span> in both <span style="color: var(--accent-color); font-weight: bold;"> audio and MIDI </span>domains. <br>
+                The experiments were in two stages:<span style="color: var(--accent-color); font-weight: bold;"> 1) Pre-training with PIAST-YT </span> and <span style="color: var(--accent-color); font-weight: bold;"> 2) Probing with PIAST-AT</span>.
+                The table below shows the results of annotation and retrieval tasks, comparing with the supervised models that were not pre-trained on PIAST-YT.
+            </p>
+            <div class="results-container">
+                <div class="chart">
+                    <img src="./result_table.png" class="result-chart">
+                </div>
+                <div class="results-summary">
+                    <h3></h3>
+                    <ul>
+                        <li>Pre-training with PIAST-YT improves classification accuracy in both audio and MIDI domains, compared to the supervised models.</li>
+                        <li>Probing with PIAST-AT shows promising results in all tasks, outperforming the supervised models.</li>
+                        <li>In most tasks, MIDI outperforms audio in performance.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 PIAST Dataset. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
