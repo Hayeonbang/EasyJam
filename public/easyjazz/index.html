@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EasyJazz 2024</title>
+  <link rel="stylesheet" href="css/solo.css">
+</head>
+<body>
+  <nav>
+    <div class="controls">
+      <a class="rewind">
+        <svg width="26" height="16" viewBox="160 18 26 16" xmlns="http://www.w3.org/2000/svg" class="rewind-icon">
+          <path d="M173.3 26.143l12 6.857V18.778l-12 6.857v-6.857l-12.444 7.11L173.3 33v-6.857z" fill="#A8B5C3" fill-rule="evenodd"/>
+        </svg>
+      </a>
+      <a class="play">
+        <svg width="21" height="24" viewBox="210 14 21 24" xmlns="http://www.w3.org/2000/svg" class="play-icon">
+          <path fill="#A8B5C2" fill-rule="evenodd" d="M230.677 25.815L210 37.63V14"/>
+        </svg>
+        <svg width="21px" height="24px" viewBox="210 14 21 24" xmlns="http://www.w3.org/2000/svg" class="pause-icon">
+          <rect id="pause-1" fill="#A8B5C2" fill-rule="evenodd" x="210" y="14" width="7" height="24"></rect>
+          <rect id="pause-2" fill="#A8B5C2" fill-rule="evenodd" x="224" y="14" width="7" height="24"></rect>
+        </svg>
+      </a>
+      <a class="forward">
+        <svg width="26" height="16" viewBox="160 18 26 16" xmlns="http://www.w3.org/2000/svg" class="forward-icon" transform="rotate(-180)">
+          <path d="M173.3 26.143l12 6.857V18.778l-12 6.857v-6.857l-12.444 7.11L173.3 33v-6.857z" fill="#A9B5C3" fill-rule="evenodd"/>
+        </svg>
+      </a>
+      <input type='image' src="https://ianwonilkim.github.io/Final/source/songchange1.svg" onmouseover="songchange_hover(this)" onmouseout="songchange_unhover(this)" class='songchange' onclick="songchange_click(this)">
+      <a class="backingtrack">Track:</a>
+      <marquee behavior="scroll"><p id='demo'>Autumn leaves 'Funky style'</p></marquee>
+      <div class="volume-slider-container">
+        <label for="volumeControl" style="color: #969DA2; margin-left: 12px;">Volume: </label>
+        <input type="range" id="volumeControl" class="volume-slider" min="0" max="1" step="0.01" value="1">
+      </div>
+    </div>
+    <button id="update-info-button" class="nav-button">Update Info</button>
+
+  </nav>
+
+  <!-- 업데이트 정보를 표시할 div -->
+  <div id="update-info" class="update-info">
+    <div id="update-content"></div>
+  </div>
+
+  <div class="loading">
+    <input type='image' src="https://ianwonilkim.github.io/Final/source/loading.svg">
+    <g fill="none" fill-rule="evenodd" transform="translate(166 91)">
+      <g transform="translate(5)">
+        <mask id="b" fill="#fff">
+          <use xlink:href="#a"/>
+        </mask>
+        <use fill="#FFF" xlink:href="#a"/>
+        <rect fill="#FF6545" x="0" y="0" width="0" height="100" mask="url(#b)" class="progress"/>
+      </g>
+      <text fill="#F2D9AE" font-family="Roboto-Bold, Roboto" font-size="24" font-weight="bold"></text>
+      <path fill="#DDC08E" d="M0 111h468v2H0zM0 152h468v1H0z"/>
+      <circle cx="30" cy="132" r="4" fill="#DDC08E"/>
+      <circle cx="444" cy="132" r="4" fill="#DDC08E"/>
+    </g>
+  </div>
+
+  <div class="notes">
+    <input type='image' src="https://ianwonilkim.github.io/Final/source/GTROFF.svg" class="note" data-note="0" id='1' onmouseover="hover(this);" onmouseout="unhover(this);">
+    <input type='image' src="https://ianwonilkim.github.io/Final/source/GTROFF.svg" class="note" data-note="1" id='2' onmouseover="hover(this);" onmouseout="unhover(this);">
+    <input type='image' src="https://ianwonilkim.github.io/Final/source/GTROFF.svg" class="note" data-note="2" id='3' onmouseover="hover(this);" onmouseout="unhover(this);">
+    <input type='image' src="https://ianwonilkim.github.io/Final/source/GTROFF.svg" class="note" data-note="3" id='4' onmouseover="hover(this);" onmouseout="unhover(this);">
+    <input type='image' src="https://ianwonilkim.github.io/Final/source/GTROFF.svg" class="note" data-note="4" id='5' onmouseover="hover(this);" onmouseout="unhover(this);">
+    <input type='image' src="https://ianwonilkim.github.io/Final/source/GTROFF.svg" class="note" data-note="5" id='6' onmouseover="hover(this);" onmouseout="unhover(this);">
+    <input type='image' src="https://ianwonilkim.github.io/Final/source/GTROFF.svg" class="note" data-note="6" id='7' onmouseover="hover(this);" onmouseout="unhover(this);">
+    <input type='image' src="https://ianwonilkim.github.io/Final/source/GTROFF.svg" class="note" data-note="7" id='8' onmouseover="hover(this);" onmouseout="unhover(this);">
+    <input type='image' src="https://ianwonilkim.github.io/Final/source/GTROFF.svg" class="note" data-note="8" id='9' onmouseover="hover(this);" onmouseout="unhover(this);">
+  </div>
+
+  <div class="INST">
+    <div class="GTR"></div>
+    <div class="SAX"></div>
+    <div class="PIANO"></div>
+  </div>
+
+  <audio id='audio' src='https://ianwonilkim.github.io/Final/audio/backing/JAZZ1.mp3'></audio>
+
+  <div id="info">
+    <span style="float:left;" id="duration"></span>
+    <span style="float:right;" id="timeleft"></span>
+  </div>
+  <script src="js/midi.js"></script>
+
+  
+  <script src="js/solo.js"></script>
+
+  <script>
+    const updateInfoButton = document.getElementById('update-info-button');
+    const updateInfoDiv = document.getElementById('update-info');
+
+    updateInfoDiv.style.display = 'none';
+
+    // update.html 내용을 로드하는 함수
+    function loadUpdateInfo() {
+      fetch('update.html')
+        .then(response => response.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const content = doc.querySelector('.container').innerHTML;
+          document.getElementById('update-content').innerHTML = content;
+        })
+        .catch(error => console.error('Error loading update info:', error));
+    }
+
+    // 업데이트 정보 표시 토글
+    updateInfoButton.addEventListener('click', () => {
+      if (updateInfoDiv.style.display === 'none') {
+        updateInfoDiv.style.display = 'block';
+        loadUpdateInfo();
+      } else {
+        updateInfoDiv.style.display = 'none';
+      }
+    });
+
+    // 페이지 클릭 시 업데이트 정보 닫기
+    document.addEventListener('click', (event) => {
+      if (!updateInfoDiv.contains(event.target) && event.target !== updateInfoButton) {
+        updateInfoDiv.style.display = 'none';
+      }
+    }); 
+  </script>
+</body>
+</html>

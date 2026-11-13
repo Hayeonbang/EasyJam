@@ -1,0 +1,16 @@
+{
+  "name": "easyjam",
+  "version": "2.0.0",
+  "description": "발달장애인 음악치료 세션을 위한 실시간 웹 합주 도구",
+  "type": "module",
+  "private": true,
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node server/server.js",
+    "test": "node --test test/",
+    "cert": "mkdir -p certificate && openssl req -x509 -newkey rsa:2048 -nodes -days 365 -subj /CN=easyjam.local -keyout certificate/key.pem -out certificate/cert.pem"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}
