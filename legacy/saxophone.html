@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyJam: Sax</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        :root {
+            --primary-color: #f39c12;
+            --secondary-color: #e67e22;
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --player-background: #000000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            justify-content: center; /* 수직 및 수평 중앙 정렬 */
+
+        }
+        
+        .audio-player {
+            background-color: var(--player-background);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .volume-slider {
+            -webkit-appearance: none;
+            width: 100px;
+            height: 5px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+        }
+
+        .volume-slider:hover {
+            opacity: 1;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+        }
+
+
+        .audio-player audio {
+            flex-grow: 1;
+            margin: 0 20px;
+        }
+
+        .audio-player audio::-webkit-media-controls-panel {
+            background-color: var(--player-background);
+        }
+
+        .audio-player audio::-webkit-media-controls-current-time-display,
+        .audio-player audio::-webkit-media-controls-time-remaining-display {
+            color: var(--text-color);
+        }
+
+        .audio-player audio::-webkit-media-controls-play-button,
+        .audio-player audio::-webkit-media-controls-mute-button {
+            background-color: var(--primary-color);
+            border-radius: 50%;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center; /* 내부 콘텐츠 수평 중앙 정렬 */
+            align-items: center; /* 내부 콘텐츠 수직 중앙 정렬 */
+            flex-direction: column;
+            flex-grow: 1; /* 남은 공간을 모두 차지하여 중앙에 위치 */
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .saxophones {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* 작은 악기와 큰 악기를 하단에 맞춤 */
+            gap: 3px;
+            margin-top: 30px;
+            width: 100%;
+            flex-wrap: nowrap;
+        }
+
+        .saxophone {
+            width: 80px;
+            height: auto;
+            flex-shrink: 1;
+            filter: grayscale(100%);
+            transition: all 0.3s ease;
+        }
+
+        .saxophone:hover, .saxophone.hover {
+            filter: none;
+            transform: scale(1.1);
+        }
+
+        .saxophone.large {
+            width: 150px;
+        }
+
+        .saxophone.small {
+            width: 90px;
+        }
+
+        @media (max-width: 768px) {
+            .saxophones {
+                gap: 2px;
+            }
+            
+            .saxophone {
+                width: 90px;
+            }
+            
+            .saxophone.large {
+                width: 120px;
+            }
+            
+            .saxophone.small {
+                width: 70px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .saxophones {
+                gap: 1px;
+            }
+            
+            .saxophone {
+                width: 100px;
+            }
+            
+            .saxophone.large {
+                width: 200px;
+            }
+            
+            .saxophone.small {
+                width: 130px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="audio-player">
+        <audio id="backingTrack" controls>
+            <source src="assets/sounds/Sunny_BackingTrack.wav" type="audio/wav">
+        </audio>
+        <div class="audio-controls">
+            <div class="volume-control">
+                <label for="backingVolume">Backing:</label>
+                <input type="range" id="backingVolume" class="volume-slider" min="0" max="1" step="0.1" value="1">
+            </div>
+            <div class="volume-control">
+                <label for="saxophoneVolume">Saxophone:</label>
+                <input type="range" id="saxophoneVolume" class="volume-slider" min="0" max="1" step="0.1" value="1">
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div id="saxophones" class="saxophones"></div>
+    </div>
+
+    <script src="js/saxophone.js"></script>
+</body>
+</html>

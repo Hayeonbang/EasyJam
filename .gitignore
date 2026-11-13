@@ -1,0 +1,4 @@
+node_modules/
+certificate/
+.DS_Store
+*.log

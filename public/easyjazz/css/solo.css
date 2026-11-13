@@ -1,0 +1,431 @@
+nav {
+  background-color: #1C1C1C;
+  height: 82px;
+  font-family: 'Roboto', sans-serif;
+  color: #969DA2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  font-size: 14px;
+  line-height: 17px;
+  position: relative;
+  z-index: 2;
+}
+
+nav .rewind {
+  margin-left: 28px;
+  height: 16px;
+  cursor: pointer;
+}
+
+nav .forward {
+  margin-left: 18px;
+  height: 16px;
+  cursor: pointer;
+}
+
+nav .play {
+  margin-left: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+nav .play-icon:hover path,
+nav .play-icon:hover rect,
+nav .rewind-icon:hover path,
+nav .rewind-icon:hover rect,
+nav .forward-icon:hover path,
+nav .forward-icon:hover rect,
+nav .songchange-icon:hover path,
+nav .songchange-icon:hover rect,
+nav .pause-icon:hover path,
+nav .pause-icon:hover rect {
+  fill: #566574;
+}
+
+.songchange {
+  z-index: 3;
+  margin-left: 12px;
+  width: 60px;
+  height: auto;
+}
+
+.description {
+  z-index: 3;
+  margin-left: 60px;
+  width: 40px;
+  height: auto;
+}
+
+nav .songchange1-icon {
+  background-image: url(https://ianwonilkim.github.io/Final/source/songchange1.svg);
+}
+
+nav .songchange2-icon {
+  display: none;
+}
+
+nav .pause-icon {
+  display: none;
+}
+
+nav .controls {
+  display: flex;
+  align-items: center;
+}
+
+nav .backingtrack {
+  display: flex;
+  margin-left: 12px;
+  margin-right: 12px;
+  align-items: center;
+}
+
+.description {
+  display: flex;
+  margin-left: 12px;
+  margin-right: 12px;
+  width: 80px;
+  height: 80px;
+  align-items: center;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  margin-top: 104px;
+  position: relative;
+  z-index: 1;
+}
+
+.loading .progress {
+  transition: width 0.3s linear;
+}
+
+.notes {
+  display: flex;
+  opacity: 0;
+  transition: opacity 3s ease;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  margin-top: 104px;
+}
+
+.notes .note {
+  height: 220px;
+}
+
+.notes .note > div {
+  height: 100%;
+  width: 32px;
+  border-radius: 16px;
+  background-color: #D8D8D8;
+  color: #541F5D;
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 23px;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 5px 0;
+  box-shadow: 0 7px 8px rgba(0, 0, 0, 0.16);
+}
+
+.notes .note:hover div {
+  background-color: #FF6545;
+  color: #fff;
+}
+
+.notes .note.key {
+  height: 300px;
+}
+
+.notes .note.key > div {
+  background-color: #ECDCCA;
+}
+
+.notes .note.key:hover > div {
+  background-color: #FF6545;
+  color: #fff;
+}
+
+.notes .note:not(:first-child) > div {
+  margin-left: 8px;
+}
+
+.notes .note:not(:last-child) > div {
+  margin-right: 8px;
+}
+
+.notes .note span {
+  font-size: 0.7em;
+}
+
+.INST .GTR {
+  background-image: url(https://ianwonilkim.github.io/Final/source/GTRPREON.svg);
+  background-size: 100%;
+  background-repeat: no-repeat;
+  width: 5vw;
+  height: 5vw;
+  bottom: 10px;
+  left: 10px;
+  z-index: 3;
+  position: fixed;
+  cursor: pointer;
+}
+
+.INST .GTR.rock {
+  background-image: url(https://ianwonilkim.github.io/Final/source/GTRPREOFF.svg);
+  background-position: 0 100%;
+}
+
+.INST .GTR.rock:before {
+  color: #FFF;
+}
+
+.INST .GTR.rock:after {
+  color: #C17CA4;
+}
+
+.INST .GTR:before,
+.INST .GTR:after {
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 13px;
+  text-align: center;
+  display: block;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+/*SAX*/
+
+.INST .SAX {
+  background-image: url(https://ianwonilkim.github.io/Final/source/SAXPREOFF.svg);
+  background-size: 100%;
+  background-repeat: no-repeat;
+  width: 5vw;
+  height: 5vw;
+  bottom: 10px;
+  left: 120px;
+  z-index: 3;
+  position: fixed;
+  cursor: pointer;
+}
+
+.INST .SAX.rock {
+  background-image: url(https://ianwonilkim.github.io/Final/source/SAXPREON.svg);
+  background-position: 0 100%;
+}
+
+.INST .SAX.rock:before {
+  color: #FFF;
+}
+
+.INST .SAX.rock:after {
+  color: #C17CA4;
+}
+
+.INST .SAX:before,
+.INST .SAX:after {
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 13px;
+  text-align: center;
+  display: block;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+/*piano*/
+
+.INST .PIANO {
+  background-image: url(https://ianwonilkim.github.io/Final/source/PIANOPREOFF.svg);
+  background-size: 100%;
+  background-repeat: no-repeat;
+  width: 5vw;
+  height: 5vw;
+  bottom: 10px;
+  left: 230px;
+  z-index: 3;
+  position: fixed;
+  cursor: pointer;
+}
+
+.INST .PIANO.rock {
+  background-image: url(https://ianwonilkim.github.io/Final/source/PIANOPREON.svg);
+  background-position: 0 100%;
+}
+
+.INST .PIANO.rock:before {
+  color: #FFF;
+}
+
+.INST .PIANO.rock:after {
+  color: #C17CA4;
+}
+
+.INST .PIANO:before,
+.INST .PIANO:after {
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 13px;
+  text-align: center;
+  display: block;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+body {
+  background-image: url('https://ianwonilkim.github.io/Final/source/wallpaper.svg'), linear-gradient(-180deg, #242150 5%, #61380B 91%);
+  background-size: cover;
+  background-position: center;
+  margin: 0;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-family: 'Roboto', sans-serif;
+}
+
+body * {
+  user-select: none;
+}
+
+html,
+body {
+  height: 100%;
+  min-width: 726px;
+}
+
+/* 볼륨 슬라이더 스타일 추가 */
+nav .volume-slider-container {
+  display: flex;
+  align-items: center;
+  margin-left: 12px;
+}
+
+nav .volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 150px;
+  height: 8px;
+  background: linear-gradient(90deg, #FF6545 0%, #FFD700 100%);
+  outline: none;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+nav .volume-slider:hover {
+  opacity: 1;
+}
+
+nav .volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #ba5203;
+  cursor: pointer;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+nav .volume-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #949494;
+  cursor: pointer;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+#progressBar {
+  border: 1px solid #aaa;
+  color: #fff;
+  width: 295px;
+  height: 30px;
+  padding: 0px;
+  display: inline-block;
+}
+
+#progress {
+  background-color: #0066CC;
+  display: inline-block;
+  line-height: 30px;
+}
+
+#buffered {
+  background-color: #cccccc;
+  display: inline-block;
+  line-height: 30px;
+  padding: 0px;
+  margin-right: 0px;
+  z-index: 1;
+}
+
+#info {
+  width: 295px;
+}
+.nav-button {
+  background: none;
+  border: none;
+  color: #969DA2;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 5px 10px;
+  margin-left: 12px;
+  transition: color 0.3s ease;
+}
+
+.nav-button:hover {
+  color: #FF6545;
+}
+
+.update-info {
+  position: fixed;
+  top: 90px;
+  right: 20px;
+  width: 250px;
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: #1C1C1C;
+  border-radius: 5px;
+  padding: 15px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  z-index: 1001;
+  color: #A8B5C3;
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+  display: none;
+}
+
+.update-info h3 {
+  margin-top: 0;
+  color: #FF6545;
+  font-size: 14px;
+}
+
+.update-info .update-item,
+.update-info .usage-item {
+  margin-bottom: 8px;
+  padding: 5px;
+  background-color: #2a2a2a;
+  border-left: 2px solid #FF6545;
+}
+
+.update-info .key {
+  display: inline-block;
+  padding: 1px 3px;
+  margin: 0 2px;
+  background-color: #3a3a3a;
+  color: #FF6545;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 0.8em;
+}

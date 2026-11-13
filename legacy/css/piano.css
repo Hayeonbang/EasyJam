@@ -1,0 +1,187 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+  
+  .container {
+    max-width: 800px;
+    width: 90%;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  }
+  
+  h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #f39c12;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  
+  #pianoImage {
+    max-width: 100%;
+    height: auto;
+    margin: 20px 0;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  }
+  
+  .instructions {
+    margin: 20px 0;
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: #cccccc;
+  }
+  
+  .highlighted-key {
+    font-weight: bold;
+    color: #f39c12;
+    text-shadow: 0 0 5px rgba(243, 156, 18, 0.5);
+  }
+  
+  .audio-player {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .audio-player .controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+  }
+  
+  /* 프로그레스 바 컨테이너의 스타일을 수정합니다 */
+  .audio-player .progress-container {
+    width: 100%;
+    height: 10px; /* 높이를 약간 늘립니다 */
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    position: relative;
+    cursor: pointer; /* 클릭 가능함을 나타내는 커서 스타일 */
+  }
+  
+  .audio-player button {
+    background-color: #f39c12;
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    margin: 0 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+  
+  .audio-player button:hover {
+    background-color: #e67e22;
+    transform: scale(1.1);
+  }
+  
+  .audio-player .progress-container {
+    width: 100%;
+    height: 10px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    position: relative;
+    cursor: pointer;
+  }
+  .audio-player .progress {
+    width: 0;
+    height: 100%;
+    background-color: #f39c12;
+    transition: width 0.1s linear;
+  }
+  
+  .audio-player .progress-handle {
+    width: 20px;
+    height: 20px;
+    background-color: #f39c12;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    transition: transform 0.1s ease;
+  }
+  
+  .audio-player .progress-handle:hover {
+    transform: translateY(-50%) scale(1.2);
+  }
+  
+
+  .volume-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .volume-control label {
+    margin-right: 10px;
+    font-size: 14px;
+    color: #cccccc;
+    width: 100px; /* 레이블의 너비를 고정합니다 */
+  }
+  
+  .volume-control input[type="range"] {
+    -webkit-appearance: none;
+    width: calc(100% - 110px);
+    height: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    outline: none;
+    border-radius: 5px;
+    transition: opacity 0.2s;
+  } 
+  
+  .volume-control input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    background: #f39c12;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+  }
+  
+  .volume-control input[type="range"]::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    background: #f39c12;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+  }
+  .volume-control input[type="range"]:hover::-webkit-slider-thumb {
+    transform: scale(1.2);
+  }
+  
+  .volume-control input[type="range"]:hover::-moz-range-thumb {
+    transform: scale(1.2);
+  }
