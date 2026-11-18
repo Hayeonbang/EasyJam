@@ -118,8 +118,9 @@ session.on('frame', (loc, rolling) => {
       continue;
     }
     if (holding[side] < pos - EIGHTH) holding[side] = nearestGrid(SUNNY, pos, 2).gridPos + EIGHTH; // 탭이 잠들었다 깬 경우
-    if (holding[side] - pos <= 0.06 * rate) {
-      sound(side, { delay: Math.max(0, (holding[side] - pos) / rate), dev: 0, pos: holding[side], auto: true });
+    const lat = session.audio.latency; // 들리는 순간이 박에 오도록 출력 지연만큼 먼저 낸다
+    if (holding[side] - pos <= (0.06 + lat) * rate) {
+      sound(side, { delay: Math.max(0, (holding[side] - pos) / rate - lat), dev: 0, pos: holding[side], auto: true });
       holding[side] += EIGHTH;
     }
   }

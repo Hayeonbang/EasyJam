@@ -60,7 +60,7 @@ export function clientId() {
 /**
  * @param {{instrument: string, sounds: Record<string,string>}} opt
  */
-export function createSession({ instrument, sounds }) {
+export function createSession({ instrument, sounds, sharpen = false }) {
   const params = new URLSearchParams(location.search);
   const roomCode = (params.get('room') || '').trim();
   const myName = (params.get('name') || '').trim().slice(0, 16);
@@ -68,7 +68,7 @@ export function createSession({ instrument, sounds }) {
   const id = clientId();
   const song = SUNNY;
 
-  const audio = new AudioEngine();
+  const audio = new AudioEngine({ sharpen });
   const conn = inRoom
     ? new Connection(() => ({ role: 'player', room: roomCode, name: myName, instrument, id }))
     : null;
@@ -309,14 +309,19 @@ export function createSession({ instrument, sounds }) {
    * @returns {{delay:number, dev:number|null, pos:number}}
    *   delay: 박자에 맞추려면 몇 초 뒤에 소리를 내야 하는지 (도움 단계 3이면 항상 0)
    *   dev  : 가장 가까운 8분음표에서 벗어난 정도(ms). 음악이 멈춰 있으면 null
-   *   pos  : 소리가 실제로 나는 곡 위치 (코드 선택용)
+   *   pos  : 소리가 실제로 들리는 곡 위치 (코드 선택용)
+   *
+   * 지금 낸 소리는 출력 지연(audio.latency)만큼 뒤에 들린다. 그래서 "지금"이 아니라
+   * "들리는 순간"을 박자 격자에 맞춘다. (예전에는 이걸 빼먹어서 박에 맞춘 소리도
+   * 늘 수십 ms 늦게 들렸다.)
    */
   let lastPlayedPos = null; // 가장 최근 연주가 울리는 곡 위치 (따라 치기 채점용)
   session.timing = () => {
-    const pos = transport.position();
+    const now = transport.position();
     lastPlayedPos = null;
-    if (!transport.rolling) return { delay: 0, dev: null, pos };
+    if (!transport.rolling) return { delay: 0, dev: null, pos: now };
     const rate = transport.state.rate;
+    const pos = now + audio.latency * rate; // 지금 내면 들리는 곡 위치
     const g = nearestGrid(song, pos, 2);
     const dev = (g.dev / rate) * 1000;
     lastPlayedPos = g.gridPos;
@@ -366,11 +371,12 @@ export function createSession({ instrument, sounds }) {
     const rate = transport.state.rate;
 
     // 시범 소리 예약 (악기별 파일이 'cue'를 받아 자기 악기 소리로 낸다)
-    const ahead = pos + CUE_AHEAD * rate;
+    const lat = audio.latency;
+    const ahead = pos + (CUE_AHEAD + lat) * rate;
     if (echo.cuePos == null || echo.cuePos > ahead || ahead - echo.cuePos > 1) echo.cuePos = pos;
     if (session.started) {
       for (const c of cuesBetween(song, pattern, echo.cuePos, ahead)) {
-        fire('cue', { slot: c.slot, pos: c.pos, delay: Math.max(0, (c.pos - pos) / rate) });
+        fire('cue', { slot: c.slot, pos: c.pos, delay: Math.max(0, (c.pos - pos) / rate - lat) });
       }
     }
     echo.cuePos = ahead;

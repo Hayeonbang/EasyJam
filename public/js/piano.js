@@ -27,7 +27,7 @@ for (const name of new Set(Object.values(SUNNY.chords).map((c) => c.piano))) {
   sounds[`piano:${name}:2`] = `../assets/sounds/piano/${name}_2.mp3`;
 }
 
-const session = createSession({ instrument: 'piano', sounds });
+const session = createSession({ instrument: 'piano', sounds, sharpen: true });
 
 // 흰 건반 9개가 곧 버튼이다. 검은 건반은 모양만 있고 터치는 아래 흰 건반으로 전달된다.
 const pads = KEYS.map((k) => h('button', { class: 'pad piano-key', 'data-key': k, 'aria-label': `건반 ${k}` }, h('span', { text: k })));
@@ -116,14 +116,36 @@ session.onMidi((note, on) => {
   else release(key);
 });
 
-// 코드가 바뀌면: 울리던 이전 화음은 잦아들고, 누르고 있는 건반은 새 코드로 이어진다
+// 코드가 바뀌면: 울리던 이전 화음은 잦아들고, 누르고 있는 건반은 새 코드로 이어진다.
+// 바뀌는 순간에 맞춰 들리도록, 바뀌기 조금 전에(출력 지연만큼 미리) 새 화음을 예약한다.
+let switchedFor = '';
+session.on('frame', (loc, rolling) => {
+  if (!rolling || loc.phase !== 'song' || held.size === 0 || !session.canPlay()) return;
+  const rate = session.transport.state.rate;
+  const lat = session.audio.latency;
+  const until = (loc.beatsToNext * SUNNY.secPerBeat) / rate; // 다음 코드까지 남은 시간(초)
+  const key = `${loc.chorus}:${loc.index}`;
+  if (until > lat + 0.05 || switchedFor === key) return;
+  switchedFor = key;
+  const next = SUNNY.chords[loc.nextChord].piano;
+  const delay = Math.max(0, until - lat);
+  for (const entry of held.values()) {
+    if (entry.chord === next) continue; // 당겨 쳐서 이미 새 코드
+    const old = entry.voice;
+    if (old) setTimeout(() => old.stop(0.35), delay * 1000);
+    entry.chord = next;
+    entry.voice = session.audio.play(`piano:${next}:${entry.voicing}`, { gain: 0.85, delay });
+  }
+});
+
 session.on('chord', (loc) => {
   for (const v of ringing) v.stop(0.35);
   ringing.clear();
   if (loc.phase !== 'song' || !session.transport.rolling) return;
+  // 미리 예약하지 못한 경우(탭이 잠깐 멈췄다 등)에만 여기서 바꾼다
   const next = SUNNY.chords[loc.chord].piano;
   for (const entry of held.values()) {
-    if (entry.chord === next) continue; // 당겨 쳐서 이미 새 코드
+    if (entry.chord === next) continue;
     if (entry.voice) entry.voice.stop(0.35);
     entry.chord = next;
     entry.voice = session.canPlay() ? session.audio.play(`piano:${next}:${entry.voicing}`, { gain: 0.85 }) : null;

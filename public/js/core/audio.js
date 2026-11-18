@@ -4,7 +4,9 @@
 // 여기서는 Web Audio로 미리 디코딩해 두고 재생한다.
 
 export class AudioEngine {
-  constructor() {
+  /** @param {{sharpen?: boolean}} [opt] sharpen: 천천히 커지는 샘플의 앞부분을 건너뛴다 (피아노) */
+  constructor({ sharpen = false } = {}) {
+    this.sharpen = sharpen;
     this.ctx = null;
     this.buffers = new Map();
     this.starts = new Map(); // 샘플마다 앞의 무음 길이(초). 재생할 때 건너뛴다
@@ -60,6 +62,16 @@ export class AudioEngine {
     return ctx.state === 'running';
   }
 
+  /**
+   * 소리를 예약한 뒤 스피커에서 실제로 들리기까지 걸리는 시간(초).
+   * 기기마다 다르다(노트북 수십 ms, 블루투스는 그보다 훨씬 길다). 모르면 0.
+   */
+  get latency() {
+    if (!this.ctx) return 0;
+    const l = (this.ctx.baseLatency || 0) + (this.ctx.outputLatency || 0);
+    return Number.isFinite(l) ? Math.min(0.15, Math.max(0, l)) : 0;
+  }
+
   get running() {
     return !!this.ctx && this.ctx.state === 'running';
   }
@@ -97,7 +109,7 @@ export class AudioEngine {
           const data = await res.arrayBuffer();
           const buf = await ctx.decodeAudioData(data);
           this.buffers.set(name, buf);
-          this.starts.set(name, leadingSilence(buf));
+          this.starts.set(name, this.sharpen ? attackStart(buf) : leadingSilence(buf));
           return buf;
         } catch (err) {
           lastErr = err;
@@ -154,12 +166,17 @@ export class AudioEngine {
     const src = ctx.createBufferSource();
     src.buffer = buf;
     const g = ctx.createGain();
-    g.gain.value = gain;
+    const offset = this.starts.get(name) || 0;
+    if (offset > 0.005) {
+      // 소리 중간에서 시작하므로 아주 짧게(4ms) 키워서 '틱' 소리를 막는다
+      g.gain.setValueAtTime(0, ctx.currentTime + Math.max(0, delay));
+      g.gain.linearRampToValueAtTime(gain, ctx.currentTime + Math.max(0, delay) + 0.004);
+    } else g.gain.value = gain;
     src.connect(g).connect(cue ? this.#cueBus : this.#bus);
     const when = ctx.currentTime + Math.max(0, delay);
     if (detune && src.detune) src.detune.value = detune; // 지원하지 않는 옛 브라우저에서는 그냥 재생
     // 샘플 앞의 무음은 건너뛴다 (색소폰 샘플은 약 40ms가 비어 있어 누른 뒤 한 박자 늦게 들렸다)
-    src.start(when, this.starts.get(name) || 0);
+    src.start(when, offset);
     if (duration > 0) {
       g.gain.setValueAtTime(gain, when + duration);
       g.gain.linearRampToValueAtTime(0, when + duration + 0.08);
@@ -218,4 +235,27 @@ function leadingSilence(buf) {
     if (Math.abs(ch[i]) > limit) return Math.max(0, i / buf.sampleRate - 0.002);
   }
   return 0;
+}
+
+/**
+ * 천천히 커지는 샘플(일부 피아노 화음은 제 음량까지 0.1초 넘게 걸린다)을 누르는 즉시
+ * 또렷하게 들리도록, 처음 0.3초 안의 최대 음량(20ms 평균)의 절반에 처음 닿는 지점을
+ * 시작점으로 잡는다. 처음부터 또렷한 샘플은 그대로 둔다.
+ */
+function attackStart(buf) {
+  const ch = buf.getChannelData(0);
+  const sr = buf.sampleRate;
+  const win = Math.max(1, Math.floor(sr * 0.02));
+  const hop = Math.max(1, Math.floor(sr * 0.005));
+  const n = Math.min(ch.length, Math.floor(sr * 0.3));
+  const env = [];
+  for (let i = 0; i + win <= n; i += hop) {
+    let sum = 0;
+    for (let j = i; j < i + win; j++) sum += ch[j] * ch[j];
+    env.push(Math.sqrt(sum / win));
+  }
+  const ref = Math.max(...env);
+  if (!(ref > 0)) return 0;
+  const k = env.findIndex((v) => v >= ref * 0.5);
+  return Math.max(leadingSilence(buf), (k * hop) / sr - 0.003);
 }
