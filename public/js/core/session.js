@@ -18,6 +18,9 @@ const ART = { piano: 'piano', saxophone: 'saxophone', percussion1: 'shaker', per
 
 const ASSIST_NAMES = { 1: '쉬움', 2: '보통', 3: '도전' };
 
+// 박자 보정: 격자보다 이만큼(초) 이내로 일찍 누른 것만 격자까지 기다렸다 낸다
+const EARLY_WAIT = 0.05;
+
 /** 작은 DOM 헬퍼. 문자열은 항상 textContent로 들어가므로 이름 등에 HTML이 섞여도 안전하다. */
 export function h(tag, attrs = {}, ...children) {
   const el = document.createElement(tag);
@@ -69,7 +72,7 @@ export function createSession({ instrument, sounds }) {
   const conn = inRoom
     ? new Connection(() => ({ role: 'player', room: roomCode, name: myName, instrument, id }))
     : null;
-  const transport = new Transport({ song, clock: conn || new LocalClock() });
+  const transport = new Transport({ song, clock: conn || new LocalClock(), followMedia: !inRoom });
 
   const session = {
     song,
@@ -318,8 +321,10 @@ export function createSession({ instrument, sounds }) {
     const dev = (g.dev / rate) * 1000;
     lastPlayedPos = g.gridPos;
     if (session.assist >= 3) return { delay: 0, dev, pos };
-    // 조금 일찍 눌렀으면 격자까지 기다렸다가, 늦게 눌렀으면 바로 낸다
-    return g.dev < 0 ? { delay: -g.dev / rate, dev, pos: g.gridPos } : { delay: 0, dev, pos };
+    // 조금 일찍 눌렀으면 격자까지 기다렸다가, 늦게 눌렀으면 바로 낸다.
+    // 너무 일찍 누른 것을 끝까지 기다리면 손보다 소리가 한참 늦게 나서 오히려 밀린 느낌이 든다.
+    if (g.dev < 0 && -g.dev <= EARLY_WAIT * rate) return { delay: -g.dev / rate, dev, pos: g.gridPos };
+    return { delay: 0, dev, pos };
   };
 
   session.chordAt = (pos) => song.chords[locate(song, pos).chord];

@@ -70,12 +70,18 @@ function sound(side, t) {
   const g = grooveHit(SUNNY, t.pos, hitCount[side]++, t.dev != null);
   session.audio.play(kit[side].id, { delay: t.delay, gain: g.gain, detune: g.detune });
   const pad = pads[side];
-  setTimeout(() => {
+  const flash = () => {
     pad.classList.remove('on');
     void pad.offsetWidth; // 연달아 쳐도 애니메이션이 매번 다시 시작되게
     pad.classList.add('on');
-    setTimeout(() => pad.classList.remove('on'), 220);
-    if (t.dev != null && Math.abs(t.dev) <= 90) session.sparkle(pad);
+    clearTimeout(pad.offTimer);
+    pad.offTimer = setTimeout(() => pad.classList.remove('on'), 220);
+  };
+  // 직접 친 것은 화면이 즉시 반응하고, 자동 반복은 소리에 맞춰 반응한다
+  if (t.auto) setTimeout(flash, t.delay * 1000);
+  else flash();
+  setTimeout(() => {
+    if (!t.auto && t.dev != null && Math.abs(t.dev) <= 90) session.sparkle(pad);
   }, t.delay * 1000);
 }
 
@@ -113,7 +119,7 @@ session.on('frame', (loc, rolling) => {
     }
     if (holding[side] < pos - EIGHTH) holding[side] = nearestGrid(SUNNY, pos, 2).gridPos + EIGHTH; // 탭이 잠들었다 깬 경우
     if (holding[side] - pos <= 0.06 * rate) {
-      sound(side, { delay: Math.max(0, (holding[side] - pos) / rate), dev: 0, pos: holding[side] });
+      sound(side, { delay: Math.max(0, (holding[side] - pos) / rate), dev: 0, pos: holding[side], auto: true });
       holding[side] += EIGHTH;
     }
   }
@@ -181,6 +187,7 @@ async function startCamera() {
   }
   camBtn.disabled = true;
   camBtn.textContent = '카메라 준비 중…';
+  session.audio.unlock(); // 버튼을 누른 지금(사용자 동작 안에서) 소리를 확실히 켜 둔다
   try {
     stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 }, audio: false });
     video.srcObject = stream;
@@ -188,6 +195,7 @@ async function startCamera() {
     for (const src of TF_SCRIPTS) await loadScript(src);
     const net = await window.posenet.load({ architecture: 'MobileNetV1', outputStride: 16, multiplier: 0.5, inputResolution: 257 });
     camOn = true;
+    await session.audio.unlock(); // 카메라를 켜는 동안 브라우저가 소리를 멈췄을 수 있다
     video.hidden = false;
     document.body.classList.add('cam-on');
     camBtn.textContent = '카메라 끄기';

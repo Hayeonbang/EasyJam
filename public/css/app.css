@@ -301,3 +301,7 @@ body.host .stage { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16
 /* ---- 웹 데모 (서버 없이 정적 호스팅) ---- */
 .demo-note { margin: 0; padding: 12px 14px; border: 2px solid var(--ink); border-radius: var(--r); background: var(--white); font-weight: 600; line-height: 1.5; }
 .demo-note a { color: inherit; font-weight: 800; }
+
+/* 색소폰 쉬움 단계: 숨기지 않고 크기 차이만 더 크게 */
+body[data-assist='1'] .sax-pad.tone { flex-grow: 1.7; }
+body[data-assist='1'] .sax-pad.small { flex-grow: 0.45; }

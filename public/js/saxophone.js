@@ -1,7 +1,7 @@
 // 색소폰: 코드가 바뀔 때마다 패드의 음이 그 코드에 어울리는 음으로 바뀐다.
 //
 // 도움 단계
-//   1 쉬움 : 코드 구성음만 보인다 (4~5개의 큰 패드, 무엇을 눌러도 잘 어울림)
+//   1 쉬움 : 9개 패드, 구성음은 아주 크게·나머지는 작게 (큰 것만 눌러도 잘 어울림)
 //   2 보통 : 9개 패드, 구성음은 크게 표시
 //   3 도전 : 9개 패드, 크기 힌트 없음, 박자 보정 없음
 
@@ -43,8 +43,6 @@ function layout() {
     const showHint = session.assist < 3;
     p.el.classList.toggle('tone', showHint && p.tone);
     p.el.classList.toggle('small', showHint && !p.tone);
-    // 쉬움: 구성음이 아닌 패드는 숨긴다 (울리는 중이면 끝날 때까지 둔다)
-    p.el.hidden = session.assist === 1 && !p.tone && !p.on;
   });
 }
 
@@ -57,8 +55,8 @@ function start(p) {
   const t = session.timing();
   p.on = true;
   p.voice = session.audio.play(`sax:${p.note}`, { delay: t.delay });
+  p.el.classList.add('on'); // 화면은 누르는 즉시 반응한다
   p.timer = setTimeout(() => {
-    p.el.classList.add('on');
     if (t.dev != null && Math.abs(t.dev) <= 90) session.sparkle(p.el);
   }, t.delay * 1000);
   session.report(t.dev);
@@ -97,7 +95,6 @@ function padFromKey(e) {
   if (e.ctrlKey || e.metaKey || e.altKey) return null;
   const m = /^[1-9]$/.test(e.key) ? e.key : (/^(?:Digit|Numpad)([1-9])$/.exec(e.code) || [])[1];
   if (!m) return null;
-  // 쉬움 단계에서는 보이는 패드만 왼쪽부터 1, 2, 3…
   return visiblePads()[Number(m) - 1] || null;
 }
 

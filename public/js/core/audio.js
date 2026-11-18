@@ -7,6 +7,7 @@ export class AudioEngine {
   constructor() {
     this.ctx = null;
     this.buffers = new Map();
+    this.starts = new Map(); // 샘플마다 앞의 무음 길이(초). 재생할 때 건너뛴다
     this.#loading = new Map();
     this.volume = 1; // 내 악기 음량 (0~1)
     this.gate = 1; // 차례가 아닐 때 0 (음소거)
@@ -37,12 +38,18 @@ export class AudioEngine {
     this.#cueBus = this.ctx.createGain();
     this.#cueBus.connect(this.#master);
     this.#applyBus(0);
+    // 카메라를 켜거나 다른 앱이 소리를 가져가면 브라우저가 오디오를 멈출 때가 있다(iPad의 'interrupted' 등).
+    // 한 번 켠 뒤에는 멈출 때마다 다시 켠다. 터치 없이 카메라로만 연주할 때 소리가 안 나던 문제.
+    this.ctx.onstatechange = () => {
+      if (this.wanted && this.ctx.state !== 'running' && this.ctx.state !== 'closed') this.ctx.resume().catch(() => {});
+    };
     return this.ctx;
   }
 
   /** 사용자가 화면을 누른 순간에 호출해야 한다 (브라우저 자동재생 정책) */
   async unlock() {
     const ctx = this.#ensure();
+    this.wanted = true;
     if (ctx.state !== 'running') {
       try {
         await ctx.resume();
@@ -90,6 +97,7 @@ export class AudioEngine {
           const data = await res.arrayBuffer();
           const buf = await ctx.decodeAudioData(data);
           this.buffers.set(name, buf);
+          this.starts.set(name, leadingSilence(buf));
           return buf;
         } catch (err) {
           lastErr = err;
@@ -135,7 +143,13 @@ export class AudioEngine {
    */
   play(name, { delay = 0, gain = 1, duration = 0, detune = 0, cue = false } = {}) {
     const buf = this.buffers.get(name);
-    if (!buf || !this.running) return null;
+    if (!buf) return null;
+    if (!this.running) {
+      // 멈춰 있으면 다시 켜 보고, 이번 소리는 켜지는 대로 낸다
+      if (!this.wanted) return null;
+      this.ctx.resume().catch(() => {});
+      if (this.ctx.state === 'closed') return null;
+    }
     const ctx = this.ctx;
     const src = ctx.createBufferSource();
     src.buffer = buf;
@@ -144,7 +158,8 @@ export class AudioEngine {
     src.connect(g).connect(cue ? this.#cueBus : this.#bus);
     const when = ctx.currentTime + Math.max(0, delay);
     if (detune && src.detune) src.detune.value = detune; // 지원하지 않는 옛 브라우저에서는 그냥 재생
-    src.start(when);
+    // 샘플 앞의 무음은 건너뛴다 (색소폰 샘플은 약 40ms가 비어 있어 누른 뒤 한 박자 늦게 들렸다)
+    src.start(when, this.starts.get(name) || 0);
     if (duration > 0) {
       g.gain.setValueAtTime(gain, when + duration);
       g.gain.linearRampToValueAtTime(0, when + duration + 0.08);
@@ -186,4 +201,21 @@ export class AudioEngine {
   stopAll(fade = 0.1) {
     for (const v of [...this.#voices]) if (!v.cue) v.stop(fade);
   }
+}
+
+/**
+ * 샘플이 실제로 소리 나기 시작하는 지점(초). 최고 음량의 2%를 처음 넘는 곳에서
+ * 2ms 앞을 시작점으로 잡는다 (소리의 첫 어택은 자르지 않는다).
+ */
+function leadingSilence(buf) {
+  const ch = buf.getChannelData(0);
+  let peak = 0;
+  for (let i = 0; i < ch.length; i++) peak = Math.max(peak, Math.abs(ch[i]));
+  if (peak === 0) return 0;
+  const limit = peak * 0.02;
+  const max = Math.min(ch.length, Math.floor(buf.sampleRate * 0.2)); // 0.2초 넘게는 찾지 않는다
+  for (let i = 0; i < max; i++) {
+    if (Math.abs(ch[i]) > limit) return Math.max(0, i / buf.sampleRate - 0.002);
+  }
+  return 0;
 }

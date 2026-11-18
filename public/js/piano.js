@@ -55,8 +55,8 @@ function press(key) {
   held.set(key, entry);
 
   const pad = pads[key - 1];
+  pad.classList.add('on'); // 화면은 누르는 즉시 반응한다 (소리를 박에 맞춰 조금 기다려도)
   entry.timer = setTimeout(() => {
-    pad.classList.add('on');
     if (t.dev != null && Math.abs(t.dev) <= 90) session.sparkle(pad);
   }, t.delay * 1000);
 
