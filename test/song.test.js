@@ -79,5 +79,6 @@ test('코드가 쓰는 모든 소리 파일이 실제로 있다', () => {
       assert.ok(fs.existsSync(path.join(ROOT, 'assets/sounds/piano', `${c.piano}${suffix}.mp3`)), `피아노 ${c.piano}${suffix}`);
     }
   }
-  assert.ok(fs.existsSync(path.join(ROOT, SUNNY.src)));
+  // 음원 경로는 페이지(public/) 기준 상대 경로다
+  assert.ok(fs.existsSync(path.join(ROOT, 'public', SUNNY.src)));
 });

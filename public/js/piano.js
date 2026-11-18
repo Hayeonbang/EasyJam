@@ -22,9 +22,9 @@ const LETTER_KEYS = { a: 1, s: 2, d: 3, f: 4, g: 5, h: 6, j: 7, k: 8, l: 9 };
 // 코드마다 보이싱 3개
 const sounds = {};
 for (const name of new Set(Object.values(SUNNY.chords).map((c) => c.piano))) {
-  sounds[`piano:${name}:0`] = `/assets/sounds/piano/${name}.mp3`;
-  sounds[`piano:${name}:1`] = `/assets/sounds/piano/${name}_1.mp3`;
-  sounds[`piano:${name}:2`] = `/assets/sounds/piano/${name}_2.mp3`;
+  sounds[`piano:${name}:0`] = `../assets/sounds/piano/${name}.mp3`;
+  sounds[`piano:${name}:1`] = `../assets/sounds/piano/${name}_1.mp3`;
+  sounds[`piano:${name}:2`] = `../assets/sounds/piano/${name}_2.mp3`;
 }
 
 const session = createSession({ instrument: 'piano', sounds });

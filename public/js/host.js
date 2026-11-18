@@ -2,7 +2,7 @@
 
 import { h, clientId, INSTRUMENT_NAMES } from './core/session.js';
 import { SUNNY, turnAt, echoAt, ECHO_SLOTS } from './core/song.js';
-import { Connection } from './core/net.js';
+import { Connection, serverAvailable, REPO_URL } from './core/net.js';
 import { Transport } from './core/transport.js';
 
 const song = SUNNY;
@@ -129,6 +129,19 @@ const startOverlay = h('div', { class: 'overlay start' },
   ),
 );
 document.body.append(startOverlay);
+
+// 서버가 없는 웹 데모 주소에서는 진행자 화면을 쓸 수 없다고 알린다 (계속 재접속하지 않게)
+serverAvailable().then((ok) => {
+  if (ok) return;
+  conn.close();
+  startOverlay.remove();
+  document.body.append(h('div', { class: 'overlay' }, h('div', { class: 'card' },
+    h('h1', { text: '서버가 필요해요' }),
+    h('p', { text: '선생님 화면과 함께 연주하기는 EasyJam 서버를 실행한 컴퓨터에서 열어야 해요. 이 주소는 웹 데모라 혼자 연습만 할 수 있어요.' }),
+    h('a', { class: 'btn big', href: './', text: '혼자 연습하기' }),
+    h('a', { class: 'btn', href: REPO_URL, target: '_blank', rel: 'noopener', text: '실행 방법 보기' }),
+  )));
+});
 document.addEventListener('pointerdown', () => transport.blocked && transport.unlock());
 
 // ---- 조작 -------------------------------------------------------------
@@ -217,7 +230,7 @@ conn.on('error', (m) => {
 async function showUrls() {
   let info = { addresses: [], port: location.port, https: location.protocol === 'https:' };
   try {
-    info = await (await fetch('/api/info')).json();
+    info = await (await fetch('api/info')).json();
   } catch {
     /* 주소를 못 받아도 지금 주소는 보여 줄 수 있다 */
   }

@@ -297,3 +297,7 @@ body.host .stage { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16
 .pattern-cell:nth-child(even) { height: 30px; align-self: end; }
 .pattern-cell[aria-pressed='true'] { background: var(--ink); }
 .pattern-cell.now { outline: 3px solid var(--accent, #e8a917); outline-offset: 1px; }
+
+/* ---- 웹 데모 (서버 없이 정적 호스팅) ---- */
+.demo-note { margin: 0; padding: 12px 14px; border: 2px solid var(--ink); border-radius: var(--r); background: var(--white); font-weight: 600; line-height: 1.5; }
+.demo-note a { color: inherit; font-weight: 800; }

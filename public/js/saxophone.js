@@ -16,7 +16,7 @@ const NOTES = [
 ];
 const MIDI_PADS = { 60: 0, 62: 1, 64: 2, 65: 3, 67: 4, 69: 5, 71: 6, 72: 7, 74: 8 };
 
-const sounds = Object.fromEntries(NOTES.map((n) => [`sax:${n}`, `/assets/sounds/saxophone/${n}.mp3`]));
+const sounds = Object.fromEntries(NOTES.map((n) => [`sax:${n}`, `../assets/sounds/saxophone/${n}.mp3`]));
 const session = createSession({ instrument: 'saxophone', sounds });
 
 const pads = Array.from({ length: 9 }, (_, i) => {

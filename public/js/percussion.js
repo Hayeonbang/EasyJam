@@ -21,13 +21,13 @@ import { grooveHit } from './core/jazz.js';
 const KITS = {
   1: {
     instrument: 'percussion1',
-    left: { id: 'shaker', name: '셰이커', sound: '/assets/sounds/drum1/shaker.mp3' },
-    right: { id: 'triangle', name: '트라이앵글', sound: '/assets/sounds/drum1/triangle.mp3' },
+    left: { id: 'shaker', name: '셰이커', sound: '../assets/sounds/drum1/shaker.mp3' },
+    right: { id: 'triangle', name: '트라이앵글', sound: '../assets/sounds/drum1/triangle.mp3' },
   },
   2: {
     instrument: 'percussion2',
-    left: { id: 'conga', name: '콩가', sound: '/assets/sounds/drum2/conga.mp3' },
-    right: { id: 'tambourine', name: '탬버린', sound: '/assets/sounds/drum2/tambourine.mp3' },
+    left: { id: 'conga', name: '콩가', sound: '../assets/sounds/drum2/conga.mp3' },
+    right: { id: 'tambourine', name: '탬버린', sound: '../assets/sounds/drum2/tambourine.mp3' },
   },
 };
 

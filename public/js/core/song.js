@@ -59,7 +59,7 @@ const A_SECTION = [
 export const SUNNY = buildSong({
   id: 'sunny',
   title: 'Sunny',
-  src: '/assets/sounds/backing/sunny.mp3',
+  src: '../assets/sounds/backing/sunny.mp3',
   bpm: 115,
   offset: 0.043, // 음원 첫 박까지의 시간(초). 음원을 분석해 맞춘 값
   introBeats: 8, // 카운트인

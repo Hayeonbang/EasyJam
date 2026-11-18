@@ -188,3 +188,19 @@ export class Connection extends Emitter {
     }
   }
 }
+
+/**
+ * 합주 서버가 있는 주소인지 확인한다. GitHub Pages 같은 정적 호스팅에서는 서버가 없으므로
+ * 혼자 연습만 할 수 있다. (api/info는 상대 경로라 어느 폴더에 올려도 같은 서버를 본다.)
+ */
+export async function serverAvailable() {
+  try {
+    const r = await fetch('api/info', { cache: 'no-store' });
+    return r.ok && (r.headers.get('content-type') || '').includes('json');
+  } catch {
+    return false;
+  }
+}
+
+/** 소스 코드와 서버 실행 방법이 있는 곳 */
+export const REPO_URL = 'https://github.com/Hayeonbang/EasyJam';

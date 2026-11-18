@@ -2,7 +2,7 @@
 // 악기별 파일(piano.js 등)은 "어떤 입력에 어떤 소리를 낼지"만 다룬다.
 
 import { SUNNY, locate, nearestGrid, turnAt, echoAt, cuesBetween, scoreEcho, ECHO_SLOTS } from './song.js';
-import { Connection, LocalClock } from './net.js';
+import { Connection, LocalClock, serverAvailable } from './net.js';
 import { AudioEngine } from './audio.js';
 import { Transport } from './transport.js';
 import { art } from './art.js';
@@ -105,7 +105,7 @@ export function createSession({ instrument, sounds }) {
   const bar = h(
     'header',
     { class: 'bar' },
-    h('a', { class: 'bar-back', href: '/', 'aria-label': '처음 화면으로', text: '←' }),
+    h('a', { class: 'bar-back', href: './', 'aria-label': '처음 화면으로', text: '←' }),
     h('div', { class: 'bar-title' }, h('b', { text: INSTRUMENT_NAMES[instrument] || instrument }), el.conn),
     h('div', { class: 'bar-chord' }, el.dots, el.chord, el.next),
     el.controls,
@@ -268,7 +268,22 @@ export function createSession({ instrument, sounds }) {
       }
       conn.close();
       document.body.append(
-        h('div', { class: 'overlay' }, h('div', { class: 'card' }, h('p', { text }), h('a', { class: 'btn big', href: '/', text: '처음 화면으로' }))),
+        h('div', { class: 'overlay' }, h('div', { class: 'card' }, h('p', { text }), h('a', { class: 'btn big', href: './', text: '처음 화면으로' }))),
+      );
+    });
+  }
+
+  // 방 번호가 붙은 주소를 서버 없는 웹 데모에서 연 경우: 재접속을 멈추고 혼자 연습으로 안내한다
+  if (conn) {
+    serverAvailable().then((ok) => {
+      if (ok) return;
+      conn.close();
+      const solo = new URL(location.href);
+      solo.searchParams.delete('room');
+      document.body.append(
+        h('div', { class: 'overlay' }, h('div', { class: 'card' },
+          h('p', { text: '이 주소에서는 함께 연주할 수 없어요. 혼자 연습은 할 수 있어요.' }),
+          h('a', { class: 'btn big', href: solo.toString(), text: '혼자 연습하기' }))),
       );
     });
   }

@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f2ede2">
   <title>EasyJam · 함께 연주해요</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="css/app.css">
 </head>
 <body class="lobby">
   <main class="lobby-card">
@@ -22,29 +22,30 @@
           <span>이름</span>
           <input id="name" class="input" type="text" maxlength="16" placeholder="이름을 적어 주세요">
         </label>
-        <label class="field col">
+        <label class="field col" id="room-field">
           <span>방 번호 <small>(혼자 연습하면 비워 두세요)</small></span>
           <input id="room" class="input" type="text" inputmode="numeric" pattern="\d{4}" maxlength="4" placeholder="예: 1234">
         </label>
       </form>
       <p id="message" class="message" role="alert"></p>
+      <p id="demo-note" class="demo-note" hidden></p>
     </section>
 
     <section class="step">
       <h2><i>02</i>악기를 골라 주세요</h2>
       <div class="inst-grid">
-        <button class="inst" data-inst="piano" data-href="/piano.html"><span class="no">01</span><span class="art" data-art="piano"></span><b>피아노</b></button>
-        <button class="inst" data-inst="saxophone" data-href="/saxophone.html"><span class="no">02</span><span class="art" data-art="saxophone"></span><b>색소폰</b></button>
-        <button class="inst" data-inst="percussion1" data-href="/percussion.html?kit=1"><span class="no">03</span><span class="art" data-art="shaker"></span><b>셰이커 · 트라이앵글</b></button>
-        <button class="inst" data-inst="percussion2" data-href="/percussion.html?kit=2"><span class="no">04</span><span class="art" data-art="conga"></span><b>콩가 · 탬버린</b></button>
+        <button class="inst" data-inst="piano" data-href="piano.html"><span class="no">01</span><span class="art" data-art="piano"></span><b>피아노</b></button>
+        <button class="inst" data-inst="saxophone" data-href="saxophone.html"><span class="no">02</span><span class="art" data-art="saxophone"></span><b>색소폰</b></button>
+        <button class="inst" data-inst="percussion1" data-href="percussion.html?kit=1"><span class="no">03</span><span class="art" data-art="shaker"></span><b>셰이커 · 트라이앵글</b></button>
+        <button class="inst" data-inst="percussion2" data-href="percussion.html?kit=2"><span class="no">04</span><span class="art" data-art="conga"></span><b>콩가 · 탬버린</b></button>
       </div>
     </section>
 
     <footer class="lobby-foot">
-      <a href="/host.html">선생님(진행자) 화면 열기</a>
-      <a href="/easyjazz/">EasyJazz (솔로 버전)</a>
+      <a href="host.html" id="host-link">선생님(진행자) 화면 열기</a>
+      <a href="easyjazz/">EasyJazz (솔로 버전)</a>
     </footer>
   </main>
-  <script type="module" src="/js/lobby.js"></script>
+  <script type="module" src="js/lobby.js"></script>
 </body>
 </html>

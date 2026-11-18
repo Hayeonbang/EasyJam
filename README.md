@@ -6,7 +6,11 @@
 
 *EasyJam is a browser-based ensemble tool for music-therapy sessions with people with developmental disabilities. Every input is mapped to notes that fit the current chord, a therapist console controls the shared backing track and turn-taking, and all devices stay on the same beat through a server-synchronised clock.*
 
+**웹 데모: https://hayeonbang.github.io/EasyJam/** (설치 없이 혼자 연습 모드를 바로 써 볼 수 있습니다. 여러 기기가 함께 연주하는 기능은 아래처럼 서버를 실행해야 합니다.)
+
 ## 실행
+
+> 서버 없이 정적 호스팅(GitHub Pages 등)에 올리면 자동으로 "혼자 연습"만 보이는 데모 모드가 됩니다. 페이지와 음원은 모두 상대 경로를 쓰므로 어느 폴더에 올려도 동작합니다.
 
 Node.js 18 이상이 필요합니다.
 
