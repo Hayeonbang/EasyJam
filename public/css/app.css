@@ -305,3 +305,8 @@ body.host .stage { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16
 /* 색소폰 쉬움 단계: 숨기지 않고 크기 차이만 더 크게 */
 body[data-assist='1'] .sax-pad.tone { flex-grow: 1.7; }
 body[data-assist='1'] .sax-pad.small { flex-grow: 0.45; }
+
+/* 혼자 연습: 반주 버튼을 크게, 악기 색으로 */
+.btn.play-main { min-height: 52px; padding: 8px 22px; font-size: 1.15rem; font-weight: 900; background: var(--accent); color: var(--on-accent); border-color: var(--ink); white-space: nowrap; }
+.btn.play-main:hover { background: var(--accent); filter: brightness(0.95); }
+.btn.play-main.playing { background: var(--white); color: var(--ink); }

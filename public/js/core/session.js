@@ -129,7 +129,8 @@ export function createSession({ instrument, sounds, sharpen = false }) {
 
   // 혼자 연습할 때만 보이는 조작 버튼 (방에서는 진행자가 조작한다)
   if (!inRoom) {
-    const playBtn = h('button', { class: 'btn icon', 'aria-label': '재생', text: '▶', onclick: () => {
+    // 반주가 있다는 걸 바로 알 수 있도록 글자와 색으로 크게 보여 준다
+    const playBtn = h('button', { class: 'btn play-main', 'aria-label': '재생', text: '▶ 반주 틀기', onclick: () => {
       audio.unlock();
       transport.unlock();
       if (transport.state.playing) transport.pause();
@@ -146,7 +147,8 @@ export function createSession({ instrument, sounds, sharpen = false }) {
     } });
     el.controls.append(playBtn, stopBtn, tempo, level, calm);
     transport.onChange(() => {
-      playBtn.textContent = transport.state.playing ? '❚❚' : '▶';
+      playBtn.textContent = transport.state.playing ? '❚❚ 반주 멈추기' : '▶ 반주 틀기';
+      playBtn.classList.toggle('playing', transport.state.playing);
       playBtn.setAttribute('aria-label', transport.state.playing ? '일시정지' : '재생');
     });
     transport.setBacking(true);
@@ -155,6 +157,8 @@ export function createSession({ instrument, sounds, sharpen = false }) {
   // ---- 시작 화면 (첫 터치로 소리 잠금 해제) ----------------------------
 
   const startBtn = h('button', { class: 'btn big', text: '불러오는 중…', disabled: true });
+  // 혼자 연습할 때는 반주와 함께 바로 시작하는 것이 기본이고, 악기만 먼저 만져 볼 수도 있다
+  const quietBtn = inRoom ? null : h('button', { class: 'btn', text: '악기만 먼저 해 보기', disabled: true });
   const startNote = h('p', { class: 'start-note', text: '소리를 준비하고 있어요' });
   const startOverlay = h(
     'div',
@@ -164,6 +168,7 @@ export function createSession({ instrument, sounds, sharpen = false }) {
       h('h1', { text: INSTRUMENT_NAMES[instrument] || instrument }),
       myName ? h('p', { class: 'hello', text: `${myName} 님, 반가워요!` }) : null,
       startBtn,
+      quietBtn,
       startNote,
     ),
   );
@@ -174,20 +179,24 @@ export function createSession({ instrument, sounds, sharpen = false }) {
   });
   loaded.then((failed) => {
     startBtn.disabled = false;
-    startBtn.textContent = '시작하기';
+    startBtn.textContent = inRoom ? '시작하기' : '▶ 반주와 함께 시작하기';
+    if (quietBtn) quietBtn.disabled = false;
     startNote.textContent = failed.length
       ? `소리 ${failed.length}개를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.`
-      : '버튼을 누르면 소리가 켜져요';
+      : inRoom ? '버튼을 누르면 소리가 켜져요' : '음악이 나오면 그 위에 같이 연주해 보세요';
     startBtn.focus();
   });
-  startBtn.addEventListener('click', async () => {
+  async function begin(withMusic) {
     await audio.unlock();
     transport.unlock();
     session.started = true;
     startOverlay.remove();
     keepAwake();
     fire('settings');
-  });
+    if (withMusic && !inRoom) transport.play();
+  }
+  startBtn.addEventListener('click', () => begin(true));
+  if (quietBtn) quietBtn.addEventListener('click', () => begin(false));
   // 그 뒤로도 터치할 때마다 확인: 절전 후 오디오가 멈춰 있으면 다시 켠다
   document.addEventListener('pointerdown', () => {
     if (session.started && !audio.running) audio.unlock();
@@ -452,7 +461,10 @@ export function createSession({ instrument, sounds, sharpen = false }) {
   function computeGate(loc) {
     if (session.muted) return [false, '🔇 잠시 쉬어요'];
     const room = session.room;
-    if (!room) return [true, ''];
+    if (!room) {
+      // 혼자 연습: 반주가 멈춰 있으면 어디서 트는지 알려 준다
+      return [true, session.started && !inRoom && !transport.state.playing ? '위의 ▶ 반주 틀기를 누르면 음악이 나와요' : ''];
+    }
     const t = room.transport;
     // 멈춤 놀이: 연주 도중 진행자가 멈추면 모두 함께 멈춘다
     if (!t.playing && t.pos > 0.5) return [false, '✋ 잠깐 멈춤!'];
