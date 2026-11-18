@@ -1,11 +1,13 @@
 // 타악기: 화면 왼쪽/오른쪽 악기를 터치·키보드·카메라(머리 움직임)로 연주한다.
 //
-// 카메라 연주는 손을 쓰기 어려운 참여자를 위한 입력 방식이다. 코가 화면의 왼쪽이나
-// 오른쪽 영역으로 들어가면 그쪽 악기가 울리고, 가운데로 돌아와야 다시 울릴 수 있다.
+// 카메라 연주는 손을 쓰기 어려운 참여자를 위한 입력 방식이다. 머리를 "평소 자리"에서
+// 왼쪽이나 오른쪽으로 조금 움직이면 그쪽 악기가 울리고, 돌아와야 다시 울릴 수 있다.
+// 평소 자리는 가운데에 있는 동안 천천히 따라가므로, 화면 가운데에 앉지 않아도 된다.
+// (예전에는 화면 가장자리 영역까지 머리가 들어가야 울려서 크게 움직여야 했다.)
 // 카메라가 없거나 모델을 받지 못해도 터치와 키보드로는 항상 연주할 수 있다.
 //
 // 도움 단계
-//   1 쉬움 : 인식 영역이 넓다 (조금만 움직여도 울림) + 박자 보정
+//   1 쉬움 : 아주 조금만 움직여도 울린다 + 박자 보정
 //           + 누르고 있으면 박자에 맞춰 계속 울린다 (여러 번 두드리기 어려운 참여자용)
 //   2 보통 : 박자 보정
 //   3 도전 : 박자 보정 없음
@@ -169,7 +171,11 @@ let camOn = false;
 let stream = null;
 let zone = 'center';
 let smoothX = 0.5;
+let home = null; // 평소 머리 위치 (영상 너비 기준 0~1)
 let lostFrames = 0;
+
+// 평소 자리에서 이만큼(영상 너비 비율) 움직이면 울린다. 도움 단계별.
+const MOVE = { 1: 0.035, 2: 0.05, 3: 0.08 };
 
 function loadScript(src) {
   return new Promise((resolve, reject) => {
@@ -198,7 +204,7 @@ async function startCamera() {
     video.width = video.videoWidth;
     video.height = video.videoHeight;
     for (const src of TF_SCRIPTS) await loadScript(src);
-    const net = await window.posenet.load({ architecture: 'MobileNetV1', outputStride: 16, multiplier: 0.5, inputResolution: 257 });
+    const net = await window.posenet.load({ architecture: 'MobileNetV1', outputStride: 16, multiplier: 0.75, inputResolution: 257 });
     camOn = true;
     await session.audio.unlock(); // 카메라를 켜는 동안 브라우저가 소리를 멈췄을 수 있다
     video.hidden = false;
@@ -224,6 +230,7 @@ function stopCamera() {
   video.hidden = true;
   tracker.hidden = true;
   zone = 'center';
+  home = null;
   document.body.classList.remove('cam-on');
   pads.left.classList.remove('near');
   pads.right.classList.remove('near');
@@ -252,7 +259,7 @@ async function detectLoop(net) {
 
 function onPose(pose) {
   const nose = pose.keypoints.find((k) => k.part === 'nose');
-  if (!nose || nose.score < 0.4) {
+  if (!nose || nose.score < 0.2) {
     // 잠깐 놓친 것은 무시하고, 계속 안 보이면 표시를 숨긴다
     if (++lostFrames > 15) tracker.hidden = true;
     return;
@@ -261,7 +268,12 @@ function onPose(pose) {
   lostFrames = 0;
   const x = nose.position.x / video.videoWidth;
   const y = nose.position.y / video.videoHeight;
-  smoothX += (x - smoothX) * 0.5; // 떨림 줄이기
+  if (home == null) {
+    // 처음 잡힌 자리를 평소 자리로 삼는다
+    smoothX = x;
+    home = x;
+  }
+  smoothX += (x - smoothX) * 0.6; // 떨림 줄이기 (너무 세게 줄이면 반응이 늦어진다)
 
   // 영상은 화면에 꽉 차게(cover) 그려지므로 같은 방식으로 좌표를 옮긴다
   const r = video.getBoundingClientRect();
@@ -272,15 +284,16 @@ function onPose(pose) {
   tracker.style.top = `${r.top + dy + y * video.videoHeight * scale}px`;
   tracker.hidden = false;
 
-  const screenX = (dx + smoothX * video.videoWidth * scale) / r.width;
-  const enter = session.assist === 1 ? 0.42 : 0.35;
-  const leave = enter + 0.05; // 경계에서 떨릴 때 연달아 울리지 않도록 나가는 선을 따로 둔다
+  const move = MOVE[session.assist] || MOVE[2];
+  const off = smoothX - home; // +면 화면 오른쪽 (영상은 거울처럼 뒤집혀 있다)
   let next = zone;
   if (zone === 'center') {
-    if (screenX < enter) next = 'left';
-    else if (screenX > 1 - enter) next = 'right';
-  } else if (zone === 'left' && screenX > leave) next = 'center';
-  else if (zone === 'right' && screenX < 1 - leave) next = 'center';
+    if (off < -move) next = 'left';
+    else if (off > move) next = 'right';
+    // 평소 자리 가까이에서 가만히 있을 때만 천천히 따라간다 (자세가 바뀌어도 같은 감도).
+    // 천천히 움직이는 참여자의 움직임까지 따라가 버리면 영영 울리지 않으므로 멀어지는 중에는 멈춘다.
+    else if (Math.abs(off) < move * 0.3) home += (smoothX - home) * 0.02;
+  } else if (Math.abs(off) < move * 0.5) next = 'center'; // 반쯤 돌아오면 다시 칠 준비
 
   if (next !== zone) {
     zone = next;
