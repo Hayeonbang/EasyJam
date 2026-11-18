@@ -192,6 +192,10 @@ async function startCamera() {
     stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 }, audio: false });
     video.srcObject = stream;
     await video.play();
+    // PoseNet은 영상 크기를 <video>의 width·height 속성에서 읽는다. 비워 두면 0×0으로 계산해서
+    // 코 좌표가 늘 (0, 0)이 되어 표시도 소리도 나지 않았다.
+    video.width = video.videoWidth;
+    video.height = video.videoHeight;
     for (const src of TF_SCRIPTS) await loadScript(src);
     const net = await window.posenet.load({ architecture: 'MobileNetV1', outputStride: 16, multiplier: 0.5, inputResolution: 257 });
     camOn = true;
@@ -252,6 +256,7 @@ function onPose(pose) {
     if (++lostFrames > 15) tracker.hidden = true;
     return;
   }
+  if (!Number.isFinite(nose.position.x) || !Number.isFinite(nose.position.y)) return;
   lostFrames = 0;
   const x = nose.position.x / video.videoWidth;
   const y = nose.position.y / video.videoHeight;
